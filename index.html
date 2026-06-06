@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PYRA Network</title>
+    <meta name="description" content="PYRA is a digital barter credit app for a closed trade network.">
+    <meta name="base:app_id" content="6a246aeaab28df7fd2fc178e">
+    <style>
+      :root {
+        --ink: #132027;
+        --muted: #5b6970;
+        --paper: #f5f7f4;
+        --panel: #ffffff;
+        --line: #d7ded9;
+        --green: #0d6f5d;
+        --gold: #bb8a2e;
+        --blue: #214e7a;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        color: var(--ink);
+        background: var(--paper);
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        border-bottom: 1px solid rgba(19, 32, 39, 0.12);
+        background: rgba(245, 247, 244, 0.94);
+        backdrop-filter: blur(10px);
+      }
+
+      .wrap {
+        width: min(1120px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 72px;
+        gap: 18px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--ink);
+        font-weight: 800;
+        letter-spacing: 0;
+      }
+
+      .mark {
+        display: grid;
+        width: 40px;
+        height: 40px;
+        place-items: center;
+        border: 2px solid var(--green);
+        color: var(--green);
+        font-weight: 900;
+      }
+
+      nav {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        font-size: 14px;
+      }
+
+      nav a {
+        color: var(--muted);
+        text-decoration: none;
+      }
+
+      main {
+        min-height: calc(100vh - 72px);
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+        gap: 36px;
+        align-items: center;
+        padding: 72px 0 52px;
+      }
+
+      h1 {
+        margin: 0;
+        max-width: 760px;
+        font-size: clamp(42px, 6vw, 84px);
+        line-height: 0.98;
+        letter-spacing: 0;
+      }
+
+      .lead {
+        margin-top: 22px;
+        max-width: 680px;
+        color: var(--muted);
+        font-size: 20px;
+        line-height: 1.5;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 28px;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 46px;
+        border: 1px solid var(--green);
+        background: var(--green);
+        color: white;
+        padding: 0 18px;
+        text-decoration: none;
+        font-weight: 700;
+      }
+
+      .button.secondary {
+        background: transparent;
+        color: var(--green);
+      }
+
+      .phone {
+        min-height: 560px;
+        border: 1px solid var(--line);
+        background:
+          linear-gradient(160deg, rgba(13, 111, 93, 0.14), rgba(187, 138, 46, 0.18)),
+          var(--panel);
+        padding: 18px;
+      }
+
+      .phone-screen {
+        height: 100%;
+        border: 1px solid rgba(19, 32, 39, 0.16);
+        background: #fbfcfb;
+        padding: 18px;
+      }
+
+      .app-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .balance {
+        margin-top: 24px;
+      }
+
+      .label {
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      .amount {
+        margin-top: 8px;
+        color: var(--green);
+        font-size: 42px;
+        font-weight: 900;
+      }
+
+      .mini-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 22px;
+      }
+
+      .tile {
+        border: 1px solid var(--line);
+        background: #ffffff;
+        padding: 14px;
+        min-height: 94px;
+      }
+
+      .tile strong {
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      .tile span {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.4;
+      }
+
+      .sections {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        padding: 0 0 56px;
+      }
+
+      .section {
+        border-top: 3px solid var(--green);
+        background: var(--panel);
+        padding: 20px;
+        min-height: 180px;
+      }
+
+      .section:nth-child(2) {
+        border-top-color: var(--gold);
+      }
+
+      .section:nth-child(3) {
+        border-top-color: var(--blue);
+      }
+
+      h2 {
+        margin: 0 0 10px;
+        font-size: 22px;
+        letter-spacing: 0;
+      }
+
+      .section p {
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      footer {
+        border-top: 1px solid var(--line);
+        padding: 22px 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      @media (max-width: 880px) {
+        nav {
+          display: none;
+        }
+
+        .hero {
+          grid-template-columns: 1fr;
+          padding-top: 46px;
+        }
+
+        .phone {
+          min-height: 460px;
+        }
+
+        .sections {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="wrap nav">
+        <div class="brand">
+          <div class="mark" aria-hidden="true">P</div>
+          <span>PYRA Network</span>
+        </div>
+        <nav aria-label="Primary navigation">
+          <a href="#network">Network</a>
+          <a href="#wallet">Wallet</a>
+          <a href="#approval">Approval</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="wrap hero">
+        <section aria-label="PYRA introduction">
+          <h1>Digital barter credit for a closed trade network.</h1>
+          <p class="lead">PYRA gives approved members a ledger-backed way to send, receive, and record barter credit activity across a private trade network.</p>
+          <div class="actions">
+            <a class="button" href="#wallet">View app preview</a>
+            <a class="button secondary" href="#approval">Member approval</a>
+          </div>
+        </section>
+
+        <aside class="phone" id="wallet" aria-label="PYRA wallet preview">
+          <div class="phone-screen">
+            <div class="app-top">
+              <span>PYRA Wallet</span>
+              <span>Base ready</span>
+            </div>
+            <div class="balance">
+              <div class="label">Available barter credit</div>
+              <div class="amount">PYRA</div>
+              <p>Member wallet, business directory, send and receive, and transaction records for the PYRA closed network.</p>
+            </div>
+            <div class="mini-grid">
+              <div class="tile">
+                <strong>Send</strong>
+                <span>Record barter-network activity between approved members.</span>
+              </div>
+              <div class="tile">
+                <strong>Receive</strong>
+                <span>Accept PYRA barter credits for eligible network trades.</span>
+              </div>
+              <div class="tile">
+                <strong>History</strong>
+                <span>Export member activity for reporting and records.</span>
+              </div>
+              <div class="tile">
+                <strong>KYC</strong>
+                <span>Account approval before access to network features.</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <div class="wrap sections">
+        <section class="section" id="network">
+          <h2>Closed Network</h2>
+          <p>PYRA is designed for a defined barter network, not as a company-operated conversion service. Members participate under network rules and account approval.</p>
+        </section>
+        <section class="section">
+          <h2>Barter Credit</h2>
+          <p>PYRA represents barter credit activity inside the network, with transparent records and app-based member tools.</p>
+        </section>
+        <section class="section" id="approval">
+          <h2>Account Approval</h2>
+          <p>Member onboarding includes identity checks, document intake, acknowledgements, and manual review before activation.</p>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      <div class="wrap">Pyramidion Cryptocurrency LLC. PYRA app URL placeholder for developer registration and network launch preparation.</div>
+    </footer>
+  </body>
+</html>
