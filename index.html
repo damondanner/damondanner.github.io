@@ -156,6 +156,51 @@
         text-transform: uppercase;
       }
 
+      .credit-panel {
+        display: grid;
+        max-width: 760px;
+        margin-top: 22px;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 18px;
+        align-items: end;
+        border: 1px solid var(--line);
+        background: rgba(17, 16, 13, 0.78);
+        padding: 18px;
+      }
+
+      .credit-kicker {
+        color: var(--gold);
+        font-size: 12px;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .credit-value {
+        margin-top: 8px;
+        color: #fff7df;
+        font-size: clamp(28px, 5vw, 46px);
+        font-weight: 900;
+        overflow-wrap: anywhere;
+      }
+
+      .credit-meta {
+        margin-top: 8px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.4;
+      }
+
+      .credit-badge {
+        border: 1px solid var(--gold);
+        color: var(--bright-gold);
+        padding: 10px 12px;
+        font-size: 12px;
+        font-weight: 900;
+        text-align: center;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
       .seal {
         position: relative;
         display: grid;
@@ -333,6 +378,14 @@
           <div class="eyebrow">Pyramidion Cryptocurrency LLC</div>
           <h1>A closed barter network wallet built on crypto rails.</h1>
           <p class="lead">PYRA is a distributed-ledger barter credit system for approved members, designed for trade activity, account approval, activity records, and multichain transparency.</p>
+          <div class="credit-panel" aria-live="polite">
+            <div>
+              <div class="credit-kicker">PYRA Barter Credit</div>
+              <div class="credit-value" id="barterCreditValue">Loading btc...</div>
+              <div class="credit-meta" id="barterCreditMeta">Pooling CoinGecko market data. Refreshes every 5 minutes.</div>
+            </div>
+            <div class="credit-badge">btc reference</div>
+          </div>
           <div class="coming">Website and member app coming soon</div>
         </div>
         <div class="seal" aria-label="PYRA logo display">
@@ -414,5 +467,104 @@
     <footer>
       <div class="wrap">PYRA Protocol modernization is in progress. No public member actions are live on this page.</div>
     </footer>
+    <script>
+      (() => {
+        const CACHE_KEY = 'pyra-barter-credit-v1';
+        const CACHE_MS = 5 * 60 * 1000;
+        const MARKET_PAGES = 4;
+        const API_BASE = 'https://api.coingecko.com/api/v3/coins/markets';
+        const valueEl = document.getElementById('barterCreditValue');
+        const metaEl = document.getElementById('barterCreditMeta');
+
+        function formatUsd(value) {
+          return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          }).format(value);
+        }
+
+        function formatTime(iso) {
+          return new Intl.DateTimeFormat('en-US', {
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit'
+          }).format(new Date(iso));
+        }
+
+        function render(payload, source) {
+          valueEl.textContent = `${formatUsd(payload.value)} btc`;
+          metaEl.textContent = `${source}. ${payload.count} prices included after null/error and under-one-cent filters. Updated ${formatTime(payload.updatedAt)}.`;
+        }
+
+        function readCache() {
+          try {
+            const cached = JSON.parse(localStorage.getItem(CACHE_KEY));
+            if (cached && Date.now() - Date.parse(cached.updatedAt) < CACHE_MS) {
+              render(cached, 'Cached reference');
+              return cached;
+            }
+          } catch (error) {
+            localStorage.removeItem(CACHE_KEY);
+          }
+
+          return null;
+        }
+
+        async function fetchMarketPage(page) {
+          const params = new URLSearchParams({
+            vs_currency: 'usd',
+            order: 'market_cap_desc',
+            per_page: '250',
+            page: String(page),
+            sparkline: 'false'
+          });
+          const response = await fetch(`${API_BASE}?${params.toString()}`, {
+            headers: { accept: 'application/json' }
+          });
+
+          if (!response.ok) {
+            throw new Error(`CoinGecko returned ${response.status}`);
+          }
+
+          return response.json();
+        }
+
+        async function refreshCredit() {
+          const pages = await Promise.all(
+            Array.from({ length: MARKET_PAGES }, (_, index) => fetchMarketPage(index + 1))
+          );
+          const prices = pages
+            .flat()
+            .map(coin => Number(coin.current_price))
+            .filter(price => Number.isFinite(price) && price >= 0.01);
+
+          if (!prices.length) {
+            throw new Error('No qualifying prices returned');
+          }
+
+          const value = prices.reduce((sum, price) => sum + price, 0) / prices.length;
+          const payload = {
+            value,
+            count: prices.length,
+            updatedAt: new Date().toISOString()
+          };
+
+          localStorage.setItem(CACHE_KEY, JSON.stringify(payload));
+          render(payload, 'Live CoinGecko reference');
+        }
+
+        readCache();
+        refreshCredit().catch(error => {
+          const cached = readCache();
+          if (!cached) {
+            valueEl.textContent = 'btc unavailable';
+            metaEl.textContent = `CoinGecko reference could not load: ${error.message}.`;
+          }
+        });
+      })();
+    </script>
   </body>
 </html>
