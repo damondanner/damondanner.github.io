@@ -3,19 +3,20 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>PYRA Network</title>
-    <meta name="description" content="PYRA is a digital barter credit app for a closed trade network.">
     <meta name="base:app_id" content="6a246aeaab28df7fd2fc178e">
+    <title>PYRA Protocol</title>
     <style>
       :root {
-        --ink: #132027;
-        --muted: #5b6970;
-        --paper: #f5f7f4;
-        --panel: #ffffff;
-        --line: #d7ded9;
-        --green: #0d6f5d;
-        --gold: #bb8a2e;
-        --blue: #214e7a;
+        --obsidian: #070604;
+        --black: #11100d;
+        --charcoal: #1d1a14;
+        --gold: #d6a84a;
+        --bright-gold: #f5d77b;
+        --sand: #e8d6a3;
+        --papyrus: #f7efd7;
+        --muted: #b9aa84;
+        --line: rgba(245, 215, 123, 0.28);
+        --green: #0f6f5e;
       }
 
       * {
@@ -24,324 +25,387 @@
 
       body {
         margin: 0;
+        background: var(--obsidian);
+        color: var(--papyrus);
         font-family: Arial, Helvetica, sans-serif;
-        color: var(--ink);
-        background: var(--paper);
+        letter-spacing: 0;
       }
 
-      header {
-        position: sticky;
-        top: 0;
-        z-index: 10;
-        border-bottom: 1px solid rgba(19, 32, 39, 0.12);
-        background: rgba(245, 247, 244, 0.94);
-        backdrop-filter: blur(10px);
+      body::before {
+        position: fixed;
+        inset: 0;
+        z-index: -2;
+        content: "";
+        background:
+          linear-gradient(90deg, rgba(214, 168, 74, 0.08) 1px, transparent 1px) 0 0 / 44px 44px,
+          linear-gradient(rgba(214, 168, 74, 0.06) 1px, transparent 1px) 0 0 / 44px 44px,
+          radial-gradient(circle at 72% 18%, rgba(245, 215, 123, 0.18), transparent 34%),
+          linear-gradient(135deg, #070604 0%, #17130c 58%, #050403 100%);
+      }
+
+      body::after {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        content: "";
+        background:
+          linear-gradient(115deg, transparent 0 48%, rgba(245, 215, 123, 0.12) 48% 50%, transparent 50% 100%),
+          linear-gradient(245deg, transparent 0 50%, rgba(214, 168, 74, 0.08) 50% 52%, transparent 52% 100%);
       }
 
       .wrap {
-        width: min(1120px, calc(100% - 32px));
+        width: min(1160px, calc(100% - 32px));
         margin: 0 auto;
       }
 
-      .nav {
+      header {
+        border-bottom: 1px solid var(--line);
+        background: rgba(7, 6, 4, 0.82);
+      }
+
+      .topbar {
         display: flex;
+        min-height: 82px;
         align-items: center;
         justify-content: space-between;
-        min-height: 72px;
         gap: 18px;
       }
 
       .brand {
         display: flex;
         align-items: center;
-        gap: 12px;
-        color: var(--ink);
-        font-weight: 800;
-        letter-spacing: 0;
-      }
-
-      .mark {
-        display: grid;
-        width: 40px;
-        height: 40px;
-        place-items: center;
-        border: 2px solid var(--green);
-        color: var(--green);
+        gap: 14px;
         font-weight: 900;
       }
 
-      nav {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        font-size: 14px;
+      .brand img {
+        width: 52px;
+        height: 52px;
+        border: 1px solid var(--line);
+        border-radius: 50%;
       }
 
-      nav a {
-        color: var(--muted);
-        text-decoration: none;
+      .brand span {
+        font-size: 20px;
+      }
+
+      .status {
+        border: 1px solid var(--gold);
+        color: var(--bright-gold);
+        padding: 10px 14px;
+        font-size: 12px;
+        font-weight: 900;
+        text-transform: uppercase;
       }
 
       main {
-        min-height: calc(100vh - 72px);
+        padding: 42px 0 64px;
       }
 
       .hero {
         display: grid;
-        grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
-        gap: 36px;
+        min-height: calc(100vh - 146px);
+        grid-template-columns: minmax(0, 1fr) 380px;
+        gap: 34px;
         align-items: center;
-        padding: 72px 0 52px;
       }
 
-      h1 {
-        margin: 0;
-        max-width: 760px;
-        font-size: clamp(42px, 6vw, 84px);
-        line-height: 0.98;
-        letter-spacing: 0;
+      .hero-copy {
+        padding: 28px 0;
       }
 
-      .lead {
-        margin-top: 22px;
-        max-width: 680px;
-        color: var(--muted);
-        font-size: 20px;
-        line-height: 1.5;
-      }
-
-      .actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-        margin-top: 28px;
-      }
-
-      .button {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 46px;
-        border: 1px solid var(--green);
-        background: var(--green);
-        color: white;
-        padding: 0 18px;
-        text-decoration: none;
-        font-weight: 700;
-      }
-
-      .button.secondary {
-        background: transparent;
-        color: var(--green);
-      }
-
-      .phone {
-        min-height: 560px;
-        border: 1px solid var(--line);
-        background:
-          linear-gradient(160deg, rgba(13, 111, 93, 0.14), rgba(187, 138, 46, 0.18)),
-          var(--panel);
-        padding: 18px;
-      }
-
-      .phone-screen {
-        height: 100%;
-        border: 1px solid rgba(19, 32, 39, 0.16);
-        background: #fbfcfb;
-        padding: 18px;
-      }
-
-      .app-top {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        padding-bottom: 14px;
-        border-bottom: 1px solid var(--line);
-        color: var(--muted);
+      .eyebrow {
+        color: var(--bright-gold);
         font-size: 13px;
-      }
-
-      .balance {
-        margin-top: 24px;
-      }
-
-      .label {
-        color: var(--muted);
-        font-size: 13px;
-        font-weight: 700;
+        font-weight: 900;
         text-transform: uppercase;
       }
 
-      .amount {
-        margin-top: 8px;
-        color: var(--green);
-        font-size: 42px;
-        font-weight: 900;
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
       }
 
-      .mini-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
+      h1 {
+        max-width: 850px;
+        margin-top: 14px;
+        color: #fff7df;
+        font-size: clamp(48px, 7vw, 88px);
+        line-height: 1.02;
+      }
+
+      .lead {
+        max-width: 760px;
         margin-top: 22px;
+        color: #d8c797;
+        font-size: 21px;
+        line-height: 1.55;
       }
 
-      .tile {
-        border: 1px solid var(--line);
-        background: #ffffff;
-        padding: 14px;
-        min-height: 94px;
+      .coming {
+        display: inline-block;
+        margin-top: 30px;
+        border: 1px solid var(--gold);
+        background: rgba(214, 168, 74, 0.08);
+        color: var(--bright-gold);
+        padding: 14px 18px;
+        font-weight: 900;
+        text-transform: uppercase;
       }
 
-      .tile strong {
-        display: block;
-        margin-bottom: 8px;
-      }
-
-      .tile span {
-        color: var(--muted);
-        font-size: 13px;
-        line-height: 1.4;
-      }
-
-      .sections {
+      .seal {
+        position: relative;
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 16px;
-        padding: 0 0 56px;
+        min-height: 460px;
+        place-items: center;
+        border: 1px solid var(--line);
+        background: linear-gradient(180deg, rgba(247, 239, 215, 0.05), rgba(214, 168, 74, 0.08));
       }
 
-      .section {
-        border-top: 3px solid var(--green);
-        background: var(--panel);
-        padding: 20px;
-        min-height: 180px;
+      .seal::before,
+      .seal::after {
+        position: absolute;
+        content: "";
+        border: 1px solid rgba(245, 215, 123, 0.22);
       }
 
-      .section:nth-child(2) {
-        border-top-color: var(--gold);
+      .seal::before {
+        inset: 20px;
       }
 
-      .section:nth-child(3) {
-        border-top-color: var(--blue);
+      .seal::after {
+        inset: 42px;
+      }
+
+      .seal img {
+        position: relative;
+        z-index: 1;
+        width: min(280px, 68vw);
+        height: auto;
+        border-radius: 50%;
+      }
+
+      .bands {
+        display: grid;
+        gap: 18px;
+      }
+
+      section {
+        border-top: 1px solid var(--line);
+        padding: 34px 0;
+      }
+
+      .section-head {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 18px;
       }
 
       h2 {
-        margin: 0 0 10px;
-        font-size: 22px;
-        letter-spacing: 0;
+        color: #fff7df;
+        font-size: 34px;
       }
 
-      .section p {
+      .note {
         color: var(--muted);
-        line-height: 1.55;
+        line-height: 1.5;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+      }
+
+      .card {
+        min-height: 180px;
+        border: 1px solid var(--line);
+        background: rgba(17, 16, 13, 0.86);
+        padding: 20px;
+      }
+
+      .label {
+        color: var(--gold);
+        font-size: 12px;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .value {
+        margin-top: 10px;
+        color: #fff7df;
+        font-size: 28px;
+        font-weight: 900;
+        overflow-wrap: anywhere;
+      }
+
+      .card p {
+        margin-top: 12px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .feature-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+      }
+
+      .feature {
+        display: grid;
+        grid-template-columns: 34px 1fr;
+        gap: 12px;
+        align-items: start;
+        border: 1px solid var(--line);
+        background: rgba(7, 6, 4, 0.72);
+        padding: 18px;
+      }
+
+      .glyph {
+        display: grid;
+        width: 34px;
+        height: 34px;
+        place-items: center;
+        border: 1px solid var(--gold);
+        color: var(--bright-gold);
+        font-weight: 900;
+      }
+
+      .feature h3 {
+        color: #fff7df;
+        font-size: 18px;
+      }
+
+      .feature p {
+        margin-top: 7px;
+        color: var(--muted);
+        line-height: 1.45;
       }
 
       footer {
         border-top: 1px solid var(--line);
-        padding: 22px 0;
+        padding: 22px 0 30px;
         color: var(--muted);
-        font-size: 13px;
       }
 
-      @media (max-width: 880px) {
-        nav {
-          display: none;
+      @media (max-width: 860px) {
+        .topbar,
+        .section-head {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .hero,
+        .grid,
+        .feature-list {
+          grid-template-columns: 1fr;
         }
 
         .hero {
-          grid-template-columns: 1fr;
-          padding-top: 46px;
+          min-height: auto;
         }
 
-        .phone {
-          min-height: 460px;
-        }
-
-        .sections {
-          grid-template-columns: 1fr;
+        .seal {
+          min-height: 360px;
         }
       }
     </style>
   </head>
   <body>
     <header>
-      <div class="wrap nav">
+      <div class="wrap topbar">
         <div class="brand">
-          <div class="mark" aria-hidden="true">P</div>
-          <span>PYRA Network</span>
+          <img src="assets/pyra-logo.jpg" alt="PYRA logo">
+          <span>PYRA Protocol</span>
         </div>
-        <nav aria-label="Primary navigation">
-          <a href="#network">Network</a>
-          <a href="#wallet">Wallet</a>
-          <a href="#approval">Approval</a>
-        </nav>
+        <div class="status">Coming Soon</div>
       </div>
     </header>
 
     <main>
       <div class="wrap hero">
-        <section aria-label="PYRA introduction">
-          <h1>Digital barter credit for a closed trade network.</h1>
-          <p class="lead">PYRA gives approved members a ledger-backed way to send, receive, and record barter credit activity across a private trade network.</p>
-          <div class="actions">
-            <a class="button" href="#wallet">View app preview</a>
-            <a class="button secondary" href="#approval">Member approval</a>
-          </div>
-        </section>
-
-        <aside class="phone" id="wallet" aria-label="PYRA wallet preview">
-          <div class="phone-screen">
-            <div class="app-top">
-              <span>PYRA Wallet</span>
-              <span>Base ready</span>
-            </div>
-            <div class="balance">
-              <div class="label">Available barter credit</div>
-              <div class="amount">PYRA</div>
-              <p>Member wallet, business directory, send and receive, and transaction records for the PYRA closed network.</p>
-            </div>
-            <div class="mini-grid">
-              <div class="tile">
-                <strong>Send</strong>
-                <span>Record barter-network activity between approved members.</span>
-              </div>
-              <div class="tile">
-                <strong>Receive</strong>
-                <span>Accept PYRA barter credits for eligible network trades.</span>
-              </div>
-              <div class="tile">
-                <strong>History</strong>
-                <span>Export member activity for reporting and records.</span>
-              </div>
-              <div class="tile">
-                <strong>KYC</strong>
-                <span>Account approval before access to network features.</span>
-              </div>
-            </div>
-          </div>
-        </aside>
+        <div class="hero-copy">
+          <div class="eyebrow">Pyramidion Cryptocurrency LLC</div>
+          <h1>A closed barter network wallet built on crypto rails.</h1>
+          <p class="lead">PYRA is a distributed-ledger barter credit system for approved members, designed for trade activity, account approval, activity records, and multichain transparency.</p>
+          <div class="coming">Website and member app coming soon</div>
+        </div>
+        <div class="seal" aria-label="PYRA logo display">
+          <img src="assets/pyra-logo.jpg" alt="Pyramidion Cryptocurrency logo">
+        </div>
       </div>
 
-      <div class="wrap sections">
-        <section class="section" id="network">
-          <h2>Closed Network</h2>
-          <p>PYRA is designed for a defined barter network, not as a company-operated conversion service. Members participate under network rules and account approval.</p>
+      <div class="wrap bands">
+        <section>
+          <div class="section-head">
+            <h2>Protocol Basics</h2>
+            <p class="note">PYRA is not presented as a conversion service. It operates as a barter credit and unit of account inside a closed barter network.</p>
+          </div>
+          <div class="grid">
+            <div class="card">
+              <div class="label">Base Contract</div>
+              <div class="value">0x6ddd86...63ed3e</div>
+              <p>Base mainnet deployment is live and source verified.</p>
+            </div>
+            <div class="card">
+              <div class="label">Supply on Base</div>
+              <div class="value">100B PYRA</div>
+              <p>Operational mirror for the PYRA closed barter network.</p>
+            </div>
+            <div class="card">
+              <div class="label">Barter Credit</div>
+              <div class="value">btc</div>
+              <p>Barter credit reference for PYRA network accounting.</p>
+            </div>
+          </div>
         </section>
-        <section class="section">
-          <h2>Barter Credit</h2>
-          <p>PYRA represents barter credit activity inside the network, with transparent records and app-based member tools.</p>
-        </section>
-        <section class="section" id="approval">
-          <h2>Account Approval</h2>
-          <p>Member onboarding includes identity checks, document intake, acknowledgements, and manual review before activation.</p>
+
+        <section>
+          <div class="section-head">
+            <h2>Features in Build</h2>
+            <p class="note">Public access will open after the member app, approval workflow, and operating records are ready.</p>
+          </div>
+          <div class="feature-list">
+            <div class="feature">
+              <div class="glyph">1</div>
+              <div>
+                <h3>Member Wallet</h3>
+                <p>Connect wallet, view PYRA balances, receive, and prepare member-approved transfers.</p>
+              </div>
+            </div>
+            <div class="feature">
+              <div class="glyph">2</div>
+              <div>
+                <h3>KYC Approval</h3>
+                <p>Identity review, operating agreement acknowledgement, and manual account approval.</p>
+              </div>
+            </div>
+            <div class="feature">
+              <div class="glyph">3</div>
+              <div>
+                <h3>Activity Records</h3>
+                <p>Barter activity history and export foundations for network reporting.</p>
+              </div>
+            </div>
+            <div class="feature">
+              <div class="glyph">4</div>
+              <div>
+                <h3>Multichain Footprint</h3>
+                <p>Ethereum, BNB Chain, Algorand B2B, and Base with room for future chain expansion.</p>
+              </div>
+            </div>
+          </div>
         </section>
       </div>
     </main>
 
     <footer>
-      <div class="wrap">Pyramidion Cryptocurrency LLC. PYRA app URL placeholder for developer registration and network launch preparation.</div>
+      <div class="wrap">PYRA Protocol modernization is in progress. No public member actions are live on this page.</div>
     </footer>
   </body>
 </html>
