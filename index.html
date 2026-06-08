@@ -493,7 +493,7 @@
         }
 
         function render(payload, source) {
-          valueEl.textContent = `${formatBtc(payload.value)} btc`;
+          valueEl.textContent = `btc (barter credit) ${formatBtc(payload.value)}`;
           metaEl.textContent = `${source}. ${payload.count} prices included after null/error and under-one-cent filters. Updated ${formatTime(payload.updatedAt)}.`;
         }
 
