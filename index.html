@@ -476,10 +476,8 @@
         const valueEl = document.getElementById('barterCreditValue');
         const metaEl = document.getElementById('barterCreditMeta');
 
-        function formatUsd(value) {
+        function formatBtc(value) {
           return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
           }).format(value);
@@ -495,7 +493,7 @@
         }
 
         function render(payload, source) {
-          valueEl.textContent = `${formatUsd(payload.value)} btc`;
+          valueEl.textContent = `${formatBtc(payload.value)} btc`;
           metaEl.textContent = `${source}. ${payload.count} prices included after null/error and under-one-cent filters. Updated ${formatTime(payload.updatedAt)}.`;
         }
 
