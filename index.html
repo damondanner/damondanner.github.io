@@ -472,6 +472,7 @@
         const CACHE_KEY = 'pyra-barter-credit-v1';
         const CACHE_MS = 5 * 60 * 1000;
         const MARKET_PAGES = 4;
+        const API_SNAPSHOT_PATH = '/api/barter-credit.json';
         const API_BASE = 'https://api.coingecko.com/api/v3/coins/markets';
         const valueEl = document.getElementById('barterCreditValue');
         const metaEl = document.getElementById('barterCreditMeta');
@@ -530,7 +531,29 @@
           return response.json();
         }
 
-        async function refreshCredit() {
+        async function fetchApiSnapshot() {
+          const response = await fetch(API_SNAPSHOT_PATH, {
+            headers: { accept: 'application/json' }
+          });
+
+          if (!response.ok) {
+            throw new Error(`PYRA API returned ${response.status}`);
+          }
+
+          const snapshot = await response.json();
+          if (snapshot.status !== 'success' || !Number.isFinite(Number(snapshot.value))) {
+            throw new Error('PYRA API returned an invalid barter-credit snapshot');
+          }
+
+          return {
+            value: Number(snapshot.value),
+            count: Number(snapshot.valid_rows || 0),
+            updatedAt: snapshot.calculated_at || new Date().toISOString(),
+            source: 'PYRA API reference'
+          };
+        }
+
+        async function fetchCoinGeckoSnapshot() {
           const pages = await Promise.all(
             Array.from({ length: MARKET_PAGES }, (_, index) => fetchMarketPage(index + 1))
           );
@@ -544,14 +567,25 @@
           }
 
           const value = prices.reduce((sum, price) => sum + price, 0) / prices.length;
-          const payload = {
+          return {
             value,
             count: prices.length,
-            updatedAt: new Date().toISOString()
+            updatedAt: new Date().toISOString(),
+            source: 'Live CoinGecko fallback reference'
           };
+        }
+
+        async function refreshCredit() {
+          let payload;
+
+          try {
+            payload = await fetchApiSnapshot();
+          } catch (apiError) {
+            payload = await fetchCoinGeckoSnapshot();
+          }
 
           localStorage.setItem(CACHE_KEY, JSON.stringify(payload));
-          render(payload, 'Live CoinGecko reference');
+          render(payload, payload.source);
         }
 
         readCache();
