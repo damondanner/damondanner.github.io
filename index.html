@@ -332,6 +332,43 @@
         line-height: 1.45;
       }
 
+      .tally {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      .tally-panel {
+        border: 1px solid var(--line);
+        background: rgba(17, 16, 13, 0.86);
+        padding: 20px;
+      }
+
+      .tally-counts {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      .tally-stat {
+        border-top: 1px solid var(--line);
+        padding-top: 12px;
+      }
+
+      .tally-stat strong {
+        display: block;
+        color: #fff7df;
+        font-size: 30px;
+      }
+
+      .tally-stat span {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
       footer {
         border-top: 1px solid var(--line);
         padding: 22px 0 30px;
@@ -347,7 +384,9 @@
 
         .hero,
         .grid,
-        .feature-list {
+        .feature-list,
+        .tally,
+        .tally-counts {
           grid-template-columns: 1fr;
         }
 
@@ -420,6 +459,30 @@
 
         <section>
           <div class="section-head">
+            <h2>Closed Network Controls</h2>
+            <p class="note">Membership, wallet registration, and final account approval are controlled before member activity opens.</p>
+          </div>
+          <div class="grid">
+            <div class="card">
+              <div class="label">Onboarding Gate</div>
+              <div class="value">Approved members</div>
+              <p>KYC intake, prohibited-region checks, document review, and registered PYRA wallet addresses are required before activation.</p>
+            </div>
+            <div class="card">
+              <div class="label">Public Rails</div>
+              <div class="value">Known wallets</div>
+              <p>Members may transact on public blockchains, but network status is tied to reviewed roster records and approved wallet addresses.</p>
+            </div>
+            <div class="card">
+              <div class="label">No Cash Conversion</div>
+              <div class="value">No cash-out</div>
+              <p>Pyramidion Cryptocurrency LLC does not cash out, redeem, broker, or convert PYRA for fiat or other tokens.</p>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <div class="section-head">
             <h2>Features in Build</h2>
             <p class="note">Public access will open after the member app, approval workflow, and operating records are ready.</p>
           </div>
@@ -435,7 +498,7 @@
               <div class="glyph">2</div>
               <div>
                 <h3>KYC Approval</h3>
-                <p>Identity review, operating agreement acknowledgement, and manual account approval.</p>
+                <p>Secure intake replaces ordinary email for identity documents, with encrypted local storage references and manual account approval.</p>
               </div>
             </div>
             <div class="feature">
@@ -458,6 +521,39 @@
                 <h3>Member Voting</h3>
                 <p>Proposal vote wallets and QR flows for approved members, counted as one registered wallet per vote.</p>
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <div class="section-head">
+            <h2>Public Vote Tally</h2>
+            <p class="note">Proposal results will publish public-safe snapshots after member approval gates and chain indexing are live.</p>
+          </div>
+          <div class="tally">
+            <div class="tally-panel">
+              <div class="label">Snapshot Format</div>
+              <div class="value">pyra_public_vote_tally</div>
+              <p>Public results show proposal metadata, yes/no counts, accepted and rejected totals, rejected-reason counts, source chain, and last indexed block.</p>
+            </div>
+            <div class="tally-panel">
+              <div class="label">Privacy Boundary</div>
+              <div class="value">Roster excluded</div>
+              <p>KYC data, member roster records, raw transfers, and voter wallet lists are excluded from public tally output.</p>
+            </div>
+          </div>
+          <div class="tally-counts" aria-label="Public tally preview">
+            <div class="tally-stat">
+              <strong>0</strong>
+              <span>yes votes</span>
+            </div>
+            <div class="tally-stat">
+              <strong>0</strong>
+              <span>no votes</span>
+            </div>
+            <div class="tally-stat">
+              <strong>pending</strong>
+              <span>last indexed block</span>
             </div>
           </div>
         </section>
