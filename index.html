@@ -369,6 +369,13 @@
         text-transform: uppercase;
       }
 
+      .tally-source {
+        margin-top: 14px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
       footer {
         border-top: 1px solid var(--line);
         padding: 22px 0 30px;
@@ -534,7 +541,7 @@
             <div class="tally-panel">
               <div class="label">Snapshot Format</div>
               <div class="value">pyra_public_vote_tally</div>
-              <p>Public results show proposal metadata, yes/no counts, accepted and rejected totals, rejected-reason counts, source chain, and last indexed block.</p>
+              <p>Public results load from assets/public-vote-tally.json when a privacy-checked snapshot is published.</p>
             </div>
             <div class="tally-panel">
               <div class="label">Privacy Boundary</div>
@@ -544,18 +551,19 @@
           </div>
           <div class="tally-counts" aria-label="Public tally preview">
             <div class="tally-stat">
-              <strong>0</strong>
+              <strong id="publicTallyYes">0</strong>
               <span>yes votes</span>
             </div>
             <div class="tally-stat">
-              <strong>0</strong>
+              <strong id="publicTallyNo">0</strong>
               <span>no votes</span>
             </div>
             <div class="tally-stat">
-              <strong>pending</strong>
+              <strong id="publicTallyBlock">pending</strong>
               <span>last indexed block</span>
             </div>
           </div>
+          <p class="tally-source" id="publicTallySource">No public tally snapshot has been published yet.</p>
         </section>
       </div>
     </main>
@@ -569,9 +577,14 @@
         const CACHE_MS = 5 * 60 * 1000;
         const MARKET_PAGES = 4;
         const API_SNAPSHOT_PATH = '/api/barter-credit.json';
+        const PUBLIC_TALLY_PATH = 'assets/public-vote-tally.json';
         const API_BASE = 'https://api.coingecko.com/api/v3/coins/markets';
         const valueEl = document.getElementById('barterCreditValue');
         const metaEl = document.getElementById('barterCreditMeta');
+        const tallyYesEl = document.getElementById('publicTallyYes');
+        const tallyNoEl = document.getElementById('publicTallyNo');
+        const tallyBlockEl = document.getElementById('publicTallyBlock');
+        const tallySourceEl = document.getElementById('publicTallySource');
 
         function formatBtc(value) {
           return new Intl.NumberFormat('en-US', {
@@ -684,7 +697,52 @@
           render(payload, payload.source);
         }
 
+        function normalizePublicTallyPayload(payload) {
+          if (payload && payload.type === 'pyra_public_vote_tally') return payload;
+          if (payload && payload.public_snapshot) return payload.public_snapshot;
+          if (payload && payload.snapshot) return payload.snapshot;
+          if (payload && Array.isArray(payload.records) && payload.records.length > 0) return payload.records[0];
+          return null;
+        }
+
+        function isSafePublicTally(snapshot) {
+          const privacy = snapshot && snapshot.privacy || {};
+          return Boolean(
+            snapshot &&
+            snapshot.type === 'pyra_public_vote_tally' &&
+            snapshot.counts &&
+            privacy.kyc_data_excluded === true &&
+            privacy.member_roster_excluded === true &&
+            privacy.voter_wallets_excluded === true &&
+            privacy.raw_transfers_excluded === true
+          );
+        }
+
+        function renderPublicTally(snapshot) {
+          tallyYesEl.textContent = String(snapshot.counts.yes || 0);
+          tallyNoEl.textContent = String(snapshot.counts.no || 0);
+          tallyBlockEl.textContent = snapshot.source && snapshot.source.last_indexed_block
+            ? String(snapshot.source.last_indexed_block)
+            : 'pending';
+          tallySourceEl.textContent = `${snapshot.proposal.title || snapshot.proposal.id} on ${snapshot.proposal.chain_id}; ${snapshot.counts.accepted || 0} accepted, ${snapshot.counts.rejected || 0} rejected. Updated ${formatTime(snapshot.generated_at)}.`;
+        }
+
+        async function refreshPublicTally() {
+          const response = await fetch(PUBLIC_TALLY_PATH, {
+            headers: { accept: 'application/json' },
+            cache: 'no-store'
+          });
+
+          if (!response.ok) return;
+
+          const snapshot = normalizePublicTallyPayload(await response.json());
+          if (isSafePublicTally(snapshot)) {
+            renderPublicTally(snapshot);
+          }
+        }
+
         readCache();
+        refreshPublicTally().catch(() => {});
         refreshCredit().catch(error => {
           const cached = readCache();
           if (!cached) {
